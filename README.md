@@ -1,1 +1,3 @@
-# phone-lookup-service
+# Phone lookup service
+
+Service check mobile phone is valid
