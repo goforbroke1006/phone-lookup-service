@@ -1,0 +1,22 @@
+{
+  "providers": [
+    {
+      "name": "apilayer_net",
+      "params": {
+        "access_key": "98tyu98tyu98tyu98tyu98tyu98tyu98tyu98tyu",
+        "country_code": "RU",
+        "format": 1
+      }
+    },
+    {
+      "name": "api_phone_validator_net",
+      "params": {
+        "APIKey": "wt-trattatatatatatatatatatatatatatatata",
+        "CountryCode": null,
+        "Locale": null,
+        "Mode": "extensive",
+        "Timeout": 10
+      }
+    }
+  ]
+}
