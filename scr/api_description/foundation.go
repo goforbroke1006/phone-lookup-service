@@ -10,7 +10,7 @@ type Model interface {
 type ApiDescription interface {
 	GetBaseUrl() string
 	GetResource() string
-	GetModelInstance() interface{}
+	GetModelInstance() Model
 	GetHttpMethod() string
 	GetParams(phone string) map[string]interface{}
 }

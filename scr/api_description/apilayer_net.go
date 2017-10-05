@@ -34,8 +34,8 @@ func (d *ApiLayerAPI) GetBaseUrl() string {
 func (d *ApiLayerAPI) GetResource() string {
 	return "/api/validate"
 }
-func (d *ApiLayerAPI) GetModelInstance() interface{} {
-	return ApiLayerResponse{}
+func (d *ApiLayerAPI) GetModelInstance() Model {
+	return new(ApiLayerResponse)
 }
 func (d *ApiLayerAPI) GetHttpMethod() string {
 	return "GET"

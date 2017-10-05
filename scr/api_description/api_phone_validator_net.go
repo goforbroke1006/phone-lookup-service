@@ -54,8 +54,8 @@ func (d *ApiPhoneValidatorNetAPI) GetBaseUrl() string {
 func (d *ApiPhoneValidatorNetAPI) GetResource() string {
 	return "/api/v2/verify"
 }
-func (d *ApiPhoneValidatorNetAPI) GetModelInstance() interface{} {
-	return ResponseModel{}
+func (d *ApiPhoneValidatorNetAPI) GetModelInstance() Model {
+	return new(ResponseModel)
 }
 func (d *ApiPhoneValidatorNetAPI) GetHttpMethod() string {
 	return "GET"

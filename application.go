@@ -3,75 +3,81 @@ package main
 import (
 	"fmt"
 	"os"
-	"./scr/api_description"
 	"net/http"
+	"regexp"
+	"./scr/config"
+	"./scr/api_description"
+	"io/ioutil"
+	"encoding/json"
+	"strings"
 )
 
 func main() {
-	if len(os.Args) < 3 {
-		panic("You should specify access_key and phone which needs to check")
+	if len(os.Args) < 2 {
+		panic("You should specify phone which needs to check")
 	}
 
-	var providers = map[string]api_description.ApiDescription{
+	var configuration config.Configuration;
+	configuration.LoadConfiguration("config.json")
+
+	var descriptions = map[string]api_description.ApiDescription{
 		"apilayer_net":            new(api_description.ApiLayerAPI),
 		"api_phone_validator_net": new(api_description.ApiPhoneValidatorNetAPI),
 	}
 
-	fmt.Println("Check providers...")
-	for pk, pobj := range providers {
-		if ! Ping(pobj) {
-			delete(providers, pk)
-			continue
-		}
-		fmt.Println("  Load [" + pk + "] -> " + pobj.GetBaseUrl())
-	}
-
-	/*accessKey := os.Args[1]
-	phone := os.Args[2]
-
+	phone := os.Args[1]
 	re := regexp.MustCompile("[^0-9]+")
 	phone = re.ReplaceAllString(phone, "")
 
-	url := fmt.Sprintf("http://apilayer.net/api/validate?access_key=%s&number=%s&country_code=RU&format=1",
-		accessKey,
-		phone)
+	httpClient := &http.Client{}
 
-	resp, err := http.Get(url)
-	doPanic(err)
-	defer resp.Body.Close()
+	for sysName, descr := range descriptions {
+		req, err := http.NewRequest(descr.GetHttpMethod(), descr.GetBaseUrl()+descr.GetResource(), nil)
+		doPanic(err)
 
-	var responseApi ApiLayerResponse
+		var provider *config.Provider = configuration.GetProvider(sysName)
+		loadParams(req, provider, descr.GetParams(phone))
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		panic(err.Error())
-	}
-	json.Unmarshal(body, &responseApi)
+		resp, err := httpClient.Do(req)
+		doPanic(err)
 
-	if false == responseApi.Valid {
-		if len(responseApi.Number) > 0 {
-			panic(fmt.Sprintf("Phone %s", phone))
-		} else {
-			panic("Response body contains unexpected JSON-data")
+		var apiResponse api_description.Model = descr.GetModelInstance()
+
+		body, err := ioutil.ReadAll(resp.Body)
+		doPanic(err)
+
+		json.Unmarshal(body, &apiResponse)
+
+		resp.Body.Close()
+
+		if apiResponse.IsValid() {
+			fmt.Println(descr.GetBaseUrl() + descr.GetResource())
+			Display(apiResponse)
+			break
 		}
 	}
-
-	fmt.Println(responseApi.InternationalFormat)
-	fmt.Println(responseApi.Location)
-	fmt.Println(responseApi.Carrier)*/
 }
 
-func Ping(d api_description.ApiDescription) bool {
-	url := d.GetBaseUrl() + "/"
-	_, err := http.Get(url)
-	fmt.Println(err)
-	return nil == err
+func loadParams(req *http.Request, provider *config.Provider, options map[string]interface{}) {
+	if strings.ToLower(req.Method) == "get" {
+		values := req.URL.Query()
+		for pn, pv := range provider.Params {
+			values.Add(pn, pv)
+		}
+		for pn, pv := range options {
+			values.Add(pn, pv.(string))
+		}
+		req.URL.RawQuery = values.Encode()
+	}
+	if strings.ToLower(req.Method) == "post" {
+		panic("POST params loading is not implemented!")
+	}
 }
 
-func Display(rm interface{}) {
-	v, _ := rm.(api_description.Model)
-	fmt.Println(v.GetLocation())
-	fmt.Println(v.GetProviderName())
+func Display(m api_description.Model) {
+	fmt.Println(m.GetPhone())
+	fmt.Println(m.GetLocation())
+	fmt.Println(m.GetProviderName())
 }
 
 func doPanic(err error) {

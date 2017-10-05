@@ -12,10 +12,10 @@
       "name": "api_phone_validator_net",
       "params": {
         "APIKey": "wt-trattatatatatatatatatatatatatatatata",
-        "CountryCode": null,
-        "Locale": null,
+        "CountryCode": "RU",
+        "Locale": "ru-RU",
         "Mode": "extensive",
-        "Timeout": 10
+        "Timeout": "10"
       }
     }
   ]
