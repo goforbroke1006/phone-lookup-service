@@ -23,6 +23,7 @@ func main() {
 	var descriptions = map[string]api_description.ApiDescription{
 		"apilayer_net":            new(api_description.ApiLayerAPI),
 		"api_phone_validator_net": new(api_description.ApiPhoneValidatorNetAPI),
+		"neutrinoapi_com":         new(api_description.NeutrinoApiAPI),
 	}
 
 	phone := os.Args[1]
@@ -53,7 +54,7 @@ func main() {
 		if apiResponse.IsValid() {
 			fmt.Println(descr.GetBaseUrl() + descr.GetResource())
 			Display(apiResponse)
-			break
+			//break
 		}
 	}
 }

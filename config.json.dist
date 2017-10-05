@@ -17,6 +17,14 @@
         "Mode": "extensive",
         "Timeout": "10"
       }
+    },
+    {
+      "name": "neutrinoapi_com",
+      "params": {
+        "user-id": "your-user-name",
+        "api-key": "your-api-key-like-this-one--RJEGHUEIRUIRHGUIERGHRUEIGHGREH67REG7RE6=)",
+        "country-code": "RU"
+      }
     }
   ]
 }
